@@ -1,12 +1,18 @@
 package com.smalldemo.pch.smalldemo.model;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * Basic object to reflect the http://jsonplaceholder.typicode.com/photos model
  * Implementing ItemInterface to respect the contract and allowing the swap this object for another.
  */
+@Entity
 public class BasicOject implements ItemInterface {
     int albumId;
-    int id;
+    @Id
+    long id;
     String title;
     String url;
     String thumbnailUrl;
@@ -21,6 +27,15 @@ public class BasicOject implements ItemInterface {
         id = -1;
     }
 
+    @Generated(hash = 375493391)
+    public BasicOject(int albumId, long id, String title, String url, String thumbnailUrl) {
+        this.albumId = albumId;
+        this.id = id;
+        this.title = title;
+        this.url = url;
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
     public int getAlbumId() {
         return albumId;
     }
@@ -29,11 +44,11 @@ public class BasicOject implements ItemInterface {
         this.albumId = albumId;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">smalldemo</string>
+    <string name="webserviceevent_error">Oups, impossible de récuperer les données web.</string>
 </resources>

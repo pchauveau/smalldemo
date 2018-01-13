@@ -1,6 +1,6 @@
 package com.smalldemo.pch.smalldemo.webservices;
 
-import com.smalldemo.pch.smalldemo.event.WebserviceEvent;
+import com.smalldemo.pch.smalldemo.event.WebserviceGetListEvent;
 import com.smalldemo.pch.smalldemo.model.BasicOject;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,13 +32,12 @@ public class GetList {
             public void onResponse(Call<List<BasicOject>> call, Response<List<BasicOject>> response) {
                 List<BasicOject> basicOjects = response.body();
 
-                EventBus.getDefault().post(new WebserviceEvent(true));
+                EventBus.getDefault().post(new WebserviceGetListEvent(true, basicOjects));
             }
 
             @Override
             public void onFailure(Call<List<BasicOject>> call, Throwable t) {
-
-                EventBus.getDefault().post(new WebserviceEvent(false));
+                EventBus.getDefault().post(new WebserviceGetListEvent(false, t.getLocalizedMessage()));
             }
         });
     }
