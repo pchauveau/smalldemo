@@ -22,4 +22,6 @@ public class BasicObjectForView extends BasicOject {
     public void switchImageToShow() {
         isTumbnail = !isTumbnail;
     }
+
+
 }

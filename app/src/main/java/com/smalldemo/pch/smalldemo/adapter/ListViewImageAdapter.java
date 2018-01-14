@@ -23,8 +23,8 @@ import java.util.List;
  */
 public class ListViewImageAdapter extends ArrayAdapter<ItemInterface> {
 
-    public ListViewImageAdapter(Context context, List<ItemInterface> item) {
-        super(context, 0, item);
+    public ListViewImageAdapter(Context context, List<ItemInterface> items) {
+        super(context, 0, items);
     }
 
     @NonNull
@@ -37,6 +37,8 @@ public class ListViewImageAdapter extends ArrayAdapter<ItemInterface> {
         }
 
         ImageView imageView = convertView.findViewById(R.id.item_basic_image_iv);
+        // By default it is true. Need to implement the boolean to use that.
+        // Could also have been done with a Singleton listing the position of the items we are willing to show fullsize.
         if (item.isThumbnailToShow()) {
             Picasso.with(getContext()).load(item.getLinkThumbnail()).placeholder(R.drawable.basic_interogation).into(imageView);
         } else {

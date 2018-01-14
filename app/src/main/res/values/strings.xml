@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">smalldemo</string>
     <string name="webserviceevent_error">Oups, impossible de récuperer les données web.</string>
+    <string name="no_data_error">Pas de données à afficher, veuillez vous connecter.</string>
+    <string name="main_fragment_get_new_data">Récupération de nouvelles données.</string>
 </resources>

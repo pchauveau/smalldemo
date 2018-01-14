@@ -36,7 +36,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainFragment extends Fragment {
-    ListViewImageAdapter listViewImageAdapter;
+    private final String KEY_LAST_POSITION = "KEY_LAST_POSITION";
+
+    private List<ItemInterface> itemInterfaces;
+    private ListViewImageAdapter listViewImageAdapter;
+
+    private int lastPositionSeen = -1;
 
     // Catching the evenment cast by the WS response.
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -45,6 +50,7 @@ public class MainFragment extends Fragment {
             BasicOjectDao basicOjectDao = ((App) getActivity().getApplication()).getDaoSession().getBasicOjectDao();
             basicOjectDao.insertOrReplaceInTx(event.getBasicOjects());
 
+            lastPositionSeen = -1;
             updateList();
         } else {
             Toast.makeText(getContext(), R.string.webserviceevent_error, Toast.LENGTH_LONG).show();
@@ -60,27 +66,51 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);        // for the @Binding
+
+        // If the savedInstanceState != null then it mean we already where navigating the Fragment.
+        if (savedInstanceState != null) {
+            lastPositionSeen = savedInstanceState.getInt(KEY_LAST_POSITION, -1);
+        }
+
+        // Calling this, if we already hava data, no need to wait.
+        if (itemInterfaces != null) {
+            updateListView();
+        } else {
+            updateList();
+        }
+
         return view;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // We dont need to call the WS everytime there is a config change.
+        // But we are calling it the 1st time we create this fragment.
+        if (savedInstanceState == null) {
+            getNetworkData();
+        }
+    }
+
+    private void getNetworkData() {
+        if (Utils.isActiveNetwork(getContext())) {
+            GetList getList = new GetList();
+            getList.getList();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         requestPermission();
+    }
 
-        // Calling this, if we already hava data, no need to wait.
-        updateList();
-
-        if (Utils.isActiveNetwork(getContext())) {
-            GetList getList = new GetList();
-            getList.getList();
-        }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // Saving this when config change to keep the position in the list
+        outState.putInt(KEY_LAST_POSITION, listView.getFirstVisiblePosition());
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -119,22 +149,26 @@ public class MainFragment extends Fragment {
 
         // If there is no data, no need to work
         if (basicObjectForViews.size() > 0) {
-            List<ItemInterface> itemInterfaces = new ArrayList<>();
+            itemInterfaces = new ArrayList<>();
             itemInterfaces.addAll(basicObjectForViews); // Cast into a list of ItemInterfaces for the ListViewImageAdapter
 
-            listViewImageAdapter = new ListViewImageAdapter(getContext(), itemInterfaces);
-            listView.setAdapter(listViewImageAdapter);
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    ((ItemInterface) adapterView.getItemAtPosition(i)).switchImageToShow();
-                    listViewImageAdapter.notifyDataSetChanged();
-                }
-            });
+            updateListView();
         } else {
-            Toast.makeText(getContext(), "Pas de données à afficher, veuillez vous connecter.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.no_data_error, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void updateListView() {
+        listViewImageAdapter = new ListViewImageAdapter(getContext(), itemInterfaces);
+        listView.setAdapter(listViewImageAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((ItemInterface) adapterView.getItemAtPosition(i)).switchImageToShow();
+                listViewImageAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -162,5 +196,16 @@ public class MainFragment extends Fragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+
+    /**
+     * Used to refresh the data from the WS.
+     */
+    public boolean onBackPressed() {
+        Toast.makeText(getContext(), R.string.main_fragment_get_new_data, Toast.LENGTH_LONG).show();
+        getNetworkData();
+
+        return true;
     }
 }
