@@ -8,4 +8,7 @@ public interface ItemInterface {
     String getTitle();
     String getLinkThumbnail();
     String getLinkFullsizeImage();
+
+    boolean isThumbnailToShow();
+    void switchImageToShow();
 }

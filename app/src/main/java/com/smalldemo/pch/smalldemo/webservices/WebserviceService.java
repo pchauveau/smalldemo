@@ -7,6 +7,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
+/**
+ * Used for retrofit.
+ */
 public interface WebserviceService {
     String ADDRESS = "http://jsonplaceholder.typicode.com";
 

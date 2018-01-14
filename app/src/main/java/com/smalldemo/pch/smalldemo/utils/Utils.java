@@ -10,6 +10,9 @@ import android.net.NetworkInfo;
  */
 public class Utils {
 
+    /**
+     * By passing a context, return true or false if there is network.
+     */
     public static boolean isActiveNetwork(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 

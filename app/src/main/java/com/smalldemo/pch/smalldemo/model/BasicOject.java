@@ -5,8 +5,9 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
- * Basic object to reflect the http://jsonplaceholder.typicode.com/photos model
+ * Basic object to reflect the http://jsonplaceholder.typicode.com/photos model for use with Retrofit/Gson
  * Implementing ItemInterface to respect the contract and allowing the swap this object for another.
+ * GreenDao on this object to keep it in DB
  */
 @Entity
 public class BasicOject implements ItemInterface {
@@ -64,6 +65,16 @@ public class BasicOject implements ItemInterface {
     @Override
     public String getLinkFullsizeImage() {
         return getUrl();
+    }
+
+    @Override
+    public boolean isThumbnailToShow() {
+        return true;
+    }
+
+    @Override
+    public void switchImageToShow() {
+
     }
 
     public void setTitle(String title) {

@@ -14,7 +14,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Class to call a webservice and get a List of BasicObjects
+ * Class to call a webservice and get a List of BasicObjects.
  */
 public class GetList {
 

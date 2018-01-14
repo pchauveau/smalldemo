@@ -37,7 +37,11 @@ public class ListViewImageAdapter extends ArrayAdapter<ItemInterface> {
         }
 
         ImageView imageView = convertView.findViewById(R.id.item_basic_image_iv);
-        Picasso.with(getContext()).load(item.getLinkThumbnail()).placeholder(R.drawable.basic_interogation).into(imageView);
+        if (item.isThumbnailToShow()) {
+            Picasso.with(getContext()).load(item.getLinkThumbnail()).placeholder(R.drawable.basic_interogation).into(imageView);
+        } else {
+            Picasso.with(getContext()).load(item.getLinkFullsizeImage()).placeholder(R.drawable.basic_interogation).into(imageView);
+        }
 
         TextView textView = convertView.findViewById(R.id.item_basic_image_tv);
         try {
